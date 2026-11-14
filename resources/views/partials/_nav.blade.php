@@ -1,10 +1,26 @@
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ route('home') }}"><i class="bi bi-house-door-fill"></i></a>
 
 
-<nav class="nav mb-3">
-    <a class="btn btn-outline-primary m-2" href="{{ route('products.index') }}"
-    class="nav-link {{ request()->is('products*') ? 'active' : ''}}">
-    All Products</a>
-    <a class="btn btn-outline-primary m-2" href="{{ route('products.filter') }}"
-    class="nav-link {{ request()->is('products/filter/*') ? 'active' : '' }}">
-    Filter</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
+                       href="{{ route('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                       href="{{ route('products.index') }}">Products</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
+
+

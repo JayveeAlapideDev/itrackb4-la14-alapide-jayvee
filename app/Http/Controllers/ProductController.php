@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -9,29 +10,50 @@ use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-   public function featured()
+    public function featured()
     {
-        
+
         $brands = Brand::all();
 
         return view('products.create', compact('brands'));
     }
-    public function index(Request $request)
-    {
-    $brands = Brand::all();          
+        public function index(Request $request)
+        {
+            $brands = Brand::all();
 
-   
 
-    $brand = $request->query('brand_id');
-    $query = Product::with('brand');
 
-    if ($brand) {
-        $query = $query->where('brand_id', $brand);
-    }
+            $brand = $request->query('brand_id');
+            $query = Product::with('brand');
 
-    $products = $query->get();
+            if ($brand) {
+                $query = $query->where('brand_id', $brand);
+            }
 
-    return view('products.index', compact('products', 'brands'));
+            $search = $request->query('search');
+            if ($search) {
+                $query = $query->where('name', 'like', "%{$search}%");
+            }
+
+            $package = $request->query('package');
+            if ($package) {
+                $query = $query->where('package', $package);
+            }
+            $allowedSorts = ['name', 'package'];
+
+            $sort = $request->query('sort', 'name');
+            if (! in_array($sort, ['name', 'package'])) {
+                $sort = 'name';
+            }
+
+
+            $products = $query
+            ->orderBy($sort)
+            ->paginate(5)
+            ->withQueryString();
+            
+
+            return view('products.index', compact('products', 'brands', 'sort'));
     }
     public function create()
     {
@@ -45,29 +67,29 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-      
-    $validated = $request->validate([
-        'name'    => 'required|max:100',
-        'price'   => 'required|numeric|min:1|max:1000',
-        'stock'   => 'required|numeric|max:1000',
-        'brand_id'   => 'required|integer|exists:brands,id',
-        'package' => 'required|in:bottle,plastic,pack,sachet,stick',
-    ]);
 
-    Product::create($validated);
+        $validated = $request->validate([
+            'name'    => 'required|max:100',
+            'price'   => 'required|numeric|min:1|max:1000',
+            'stock'   => 'required|numeric|max:1000',
+            'brand_id'   => 'required|integer|exists:brands,id',
+            'package' => 'required|in:bottle,plastic,pack,sachet,stick',
+        ]);
 
-    return redirect()
-        ->route('products.index')
-        ->with('success', 'product added successfully');
+        Product::create($validated);
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'product added successfully');
     }
-    
-   
+
+
     public function show(Product $product)
     {
-    return view('products.show', compact('product'));
+        return view('products.show', compact('product'));
     }
 
-    
+
     public function edit(Product $product)
     {
         $brands = Brand::all();
@@ -79,20 +101,19 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
-{
-      Log::info('Product updated', [
-    'id' => $product->id,
-    ]);
+    {
+        Log::info('Product updated', [
+            'id' => $product->id,
+        ]);
 
-    $validated = $request->validate([
-        // the same rules you wrote in store()
-    ]);
- 
-    $product->update($validated);
- 
-    return redirect()->route('products.index');
-    
-}
+        $validated = $request->validate([
+            // the same rules you wrote in store()
+        ]);
+
+        $product->update($validated);
+
+        return redirect()->route('products.index');
+    }
 
 
     /**
@@ -100,12 +121,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-      abort_if($product->brand()->count() === 1, 403);
 
 
-    $product->delete();
-    return redirect()->route('products.index');
-
-
+        $product->delete();
+        return redirect()->route('products.index');
     }
 }

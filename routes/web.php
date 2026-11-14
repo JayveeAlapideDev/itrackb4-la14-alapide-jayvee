@@ -1,11 +1,12 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\HomeController;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])
+
+->name('home');
 
 Route::get('/whoami', function (){
     return 'Jayvee Alapide | 2023-71200 | Block 4C | ITRACKB4 Laravel 12';

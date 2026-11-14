@@ -1,8 +1,11 @@
 
 QUESTIONS
 
-H1. The top of my error page named a file in vendor because that is where Laravel threw the error when it couldn’t find my misspelled method withh(). My mistake was the extra letter in index() in ProducrController.php, line 123. The Exception trace showed it in the first frame outside vendor, already opened with that line marked.
+J1
+A resource controller's `index()` fetches a list of records from the database ( `Product::with('brand')`) and passes them to the view, while my HomeController only returns a page. It also reads the query string (search, filters, sort, page number) and applies those values to the query, which my HomeController never has to do.
 
-H2. It records what actually happened on normal requests, in storage/logs/laravel.log, with timestamps and the values passed in (like product_id or filter). The error page only appears at the moment of a crash, so it can’t show silent wrong-output bugs or what happened last month.
+J2
+Before I added `withQueryString()`, the pagination links only contained `?page=2`, so the search term was dropped from the URL. The controller therefore received only the page number with no `search` value, and it showed page 2 of the unfiltered list instead of page 2 of the search results.
 
-H3. 403 is better when the person isn’t allowed and nothing they do will change. Redirect with a message is better when they can fix it and try again, like validation errors or an expired session, so they keep their input and see what to correct
+J3
+A misspelled sort value is worse than an error because it fails silently: SQLite treats the unknown name as plain text, the page still loads, and the list comes back in no particular order, so nobody notices or reports it. On a different database the same URL would crash the page. My allowed list (`['name', 'package']`) means only known columns ever reach `orderBy()`, and anything else falls back to `name`, so the list is always sorted
