@@ -7,4 +7,3 @@
 
     <a href="{{ route('products.index') }}">Back to the list</a>
 @endsection
-    
