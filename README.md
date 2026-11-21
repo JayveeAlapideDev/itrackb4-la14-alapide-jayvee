@@ -1,13 +1,11 @@
+F1. This lesson gave us authentication, meaning we verified who the user is through login, logout, register, and the `auth` middleware. What is still missing for the next meeting is authorisation, meaning what a logged-in user is allowed to do, such as roles or policies.
 
-QUESTIONS
-F1. Ibinigay ng lesson na ito ang authentication, ibig sabihin napatunayan natin kung sino ang user sa pamamagitan ng login, logout, register, at auth middleware. Ang kulang pa sa susunod na meeting ay authorisation, ibig sabihin kung ano lang ang pinapayagang gawin ng naka-login na user, tulad ng roles o policies.
+F2. `session()->regenerate()` is called after login to create a new session ID, because otherwise an attacker could reuse an old session ID to impersonate you (session fixation).
 
-F2. Tinatawag ang session()->regenerate() pagka-login para gumawa ng bagong session ID, kasi kung hindi, pwedeng magamit ng attacker ang lumang session ID para maging ikaw (session fixation).
+F3. The same message is used for a wrong password and an unknown email so an attacker cannot tell whether an account is registered under a given email (user enumeration).
 
-F3. Iisa ang message sa maling password at unknown email para hindi malaman ng umaatake kung may account na naka-register sa isang email (user enumeration).
+F4. `index` and `show` are public because they only read data, while `create`, `edit`, `update`, and `destroy` are protected by `auth` because they change data and the person doing it must be identified.
 
-F4. Public ang index at show kasi nagbabasa lang sila ng data, habang protected ng auth ang create, edit, update, at destroy kasi nagbabago sila ng data at dapat kilala ang gagawa nito.
+F5. Hiding buttons from guests is not enough because it is only cosmetic and a stranger can still type the URL or send a direct request, so the `auth` middleware on the server is what actually stops them.
 
-F5. Hindi sapat ang pagtatago ng buttons para sa guest kasi cosmetic lang ito at pwede pa ring i-type ang URL o magpadala ng direktang request, kaya ang auth middleware sa server ang tunay na pumipigil sa estranghero
-
-F6. Kailangang eksaktong login ang pangalan ng route kasi tinatawag ng auth middleware ang route('login') para malaman kung saan ire-redirect ang guest, at kapag wala ito, mag-e-error ng Route [login] not defined
+F6. The route must be named exactly `login` because the `auth` middleware calls `route('login')` to know where to redirect guests, and if it does not exist, Laravel throws `Route [login] not defined`.
