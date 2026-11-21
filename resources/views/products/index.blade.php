@@ -6,14 +6,15 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h3>Products</h3>
 
-
+    
     <a href="{{ route('products.create') }}" class="btn btn-primary">+Add Product</a>
+    
 </div>
-
+ 
 
 
 <nav>
-    <h3>BRAND</h3>
+    <h6>BRAND</h6>
     <a href="{{ route('products.index') }}">ALL</a> |
     @foreach ($brands as $brand)
     <a href="{{ route('products.index', ['brand_id' => $brand->id]) }}">{{ strtoupper($brand->name) }}</a> |
@@ -21,11 +22,13 @@
     @endforeach
 </nav>
 
-<form method="GET" action="{{ route('products.index') }}">
-    <input type="text" name="search" value="{{ request('search') }}">
+<form method="GET" action="{{ route('products.index') }}"
+ class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <input type="text" name="search" value="{{ request('search') }}"
+     class="form-control w-auto" placeholder="Search">
 
 
-    <select name="brand_id">
+    <select name="brand_id" class="form-select w-auto">
         <option value="">All Brands</option>
         @foreach ($brands as $brand)
         <option value="{{ $brand->id }}"
@@ -33,14 +36,14 @@
         @endforeach
     </select>
 
-    <select name="sort" class="form-select">
+    <select name="sort" class="form-select w-auto">
         <option value="name" @selected(request('sort')==='name' )>Sort by Name</option>
         <option value="package" @selected(request('sort')==='package' )>Sort by Package</option>
     </select>
 
 
-    <button>Apply</button>
-    <a href="{{ route('products.index') }}">Clear</a>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Clear</a>
 </form>
 
 
@@ -51,8 +54,9 @@
         <th>Stock</th>
         <th>Brand</th>
         <th>Package</th>
+        
         <th>Action</th>
-
+        
     </tr>
 
     @foreach ($products as $product)
@@ -62,6 +66,8 @@
         <td>{{ $product['stock'] }}</td>
         <td>{{ $product->brand->name }}</td>
         <td>{{ $product['package'] }}</td>
+
+        
         <td>
             <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-outline-primary">Edit</a>
             <form action="{{ route('products.destroy', $product) }}" method="POST"
@@ -70,7 +76,8 @@
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
-
+        </td>
+        
 
     </tr>
     @endforeach
